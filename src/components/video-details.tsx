@@ -18,15 +18,13 @@ export function VideoDetails({ videoId }: VideoDetailsProps) {
 
   return (
     <div className="mb-8 flex flex-col gap-4 rounded-md border">
-      <h3 className="mx-4 mt-4 text-xl font-medium">{video?.title}</h3>
-
       <VideoPlayer
         cloudinaryUrl={video?.cloudinaryUrl}
         thumbnailUrl={video?.thumbnailUrl}
       />
       <VideoMetaFunctions video={video!} isVideoDetail />
-
-      <div className="mx-4 mb-4">
+      <div className="mx-4 mb-4 flex flex-col gap-4">
+        <h3 className="text-2xl font-medium">{video?.title}</h3>
         <p className="whitespace-pre-wrap text-sm">{video?.description}</p>
       </div>
     </div>
