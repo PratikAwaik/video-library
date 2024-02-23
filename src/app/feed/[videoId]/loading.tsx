@@ -1,4 +1,4 @@
-import { Layout } from "~/components/layout";
+// import { Layout } from "~/components/layout";
 import { Skeleton } from "~/components/ui/skeleton";
 
 export default function VideoDetailsLoadingSkeleton() {
