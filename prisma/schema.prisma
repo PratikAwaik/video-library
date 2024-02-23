@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL") // uses connection pooling
+    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Video {
+    id            Int      @id @default(autoincrement())
+    title         String
+    description   String?
+    cloudinaryUrl String   @map("cloudinary_url")
+    thumbnailUrl  String   @map("thumbnail_url")
+    likes         Like[]
+    views         View[]
+    likesCount    Int      @default(0) @map("likes_count")
+    viewsCount    Int      @default(0) @map("views_count")
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    @@index([title])
+    @@map("videos")
+}
+
+model Like {
+    id        Int    @id @default(autoincrement())
+    machineId String @map("machine_id")
+    video     Video  @relation(fields: [videoId], references: [id])
+    videoId   Int    @map("video_id")
+
+    @@unique([machineId, videoId])
+    @@map("likes")
+}
+
+model View {
+    id        Int    @id @default(autoincrement())
+    machineId String @map("machine_id")
+    video     Video  @relation(fields: [videoId], references: [id])
+    videoId   Int    @map("video_id")
+
+    @@unique([machineId, videoId])
+    @@map("views")
+}
