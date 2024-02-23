@@ -48,7 +48,7 @@ export async function processFile(
     ).then((result) => {
       piecesCompleted++;
       onProgress(piecesCompleted / totalPieces);
-      secureUrl = result.secure_url;
+      secureUrl = (result as { secure_url: string }).secure_url;
     });
 
     promises.push(promise);
@@ -101,5 +101,6 @@ export async function send(
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await response.json();
 }
