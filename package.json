@@ -1,8 +1,9 @@
 {
-  "name": "vidext-2",
+  "name": "video-player",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "homepage": "https://vidext-video-library.vercel.app/",
   "scripts": {
     "build": "next build",
     "db:push": "prisma db push",
