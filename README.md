@@ -11,6 +11,11 @@ Check it out [here](https://vidext-video-library.vercel.app/).
 3. Copy `.env.example` file to `.env` and fill in the required environment variables.
 4. Finally, run `pnpm run dev` or `npm run dev` or use any other package manager of your choice to run the development environment.
 
+## Testing the API calls
+
+1. The file `video-feed.tsx` contains the component for displaying all the videos uploaded by the users. The component also contains the API call, `getVideos` to fetch all the videos. Therefore, to check if the API functions properly, just visit the homepage and check if the videos are fetched.
+2. To test the `incrementPlayCount` functionality, click on any of the videos from the homepage. The view count will increase by one only if you've visited the video for the first time.
+
 ## Features
 
 - Browse video library

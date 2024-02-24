@@ -29,6 +29,7 @@ export function VideoPlayer({ cloudinaryUrl, thumbnailUrl }: VideoPlayerProps) {
           src={cloudinaryUrl}
           preload="auto"
           muted
+          autoPlay
           className="aspect-video h-full w-full"
         />
         <MediaPosterImage
