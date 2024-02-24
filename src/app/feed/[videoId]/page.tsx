@@ -8,7 +8,7 @@ export default async function VideoDetailsPage({
 }) {
   return (
     <Layout>
-      <div className="mx-auto mt-10">
+      <div className="mx-auto">
         <VideoDetails videoId={params.videoId} />
       </div>
     </Layout>

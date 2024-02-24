@@ -1,18 +1,18 @@
 import { VideoPlayer } from "./video-player";
 import { api } from "~/trpc/server";
 import { VideoMetaFunctions } from "./video-meta-functions";
-import { cookieService } from "~/lib/storage";
+import { cookies } from "next/headers";
 
 type VideoDetailsProps = {
   videoId: string;
 };
 
-const MACHINE_ID = cookieService.getValue("machine-id");
-
 export async function VideoDetails({ videoId }: VideoDetailsProps) {
+  const MACHINE_ID = cookies().get("machine-id")?.value;
+
   const video = await api.video.getVideoDetails.query({
     videoId: parseInt(videoId),
-    machineId: MACHINE_ID,
+    machineId: cookies().get("machine-id")?.value,
   });
 
   return (

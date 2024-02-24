@@ -4,7 +4,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 export default function VideoDetailsLoadingSkeleton() {
   return (
     <Layout>
-      <div className="mx-auto mt-10">
+      <div className="mx-auto">
         <div className="mb-8 flex flex-col gap-4 rounded-md">
           <Skeleton className="h-96 w-full" />
           <div className="flex items-center gap-4">

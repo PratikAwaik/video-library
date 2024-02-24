@@ -4,7 +4,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 export default function UploadLoadingSkeleton() {
   return (
     <Layout>
-      <div className="mt-10 flex w-full items-center justify-center overflow-hidden">
+      <div className="flex w-full items-center justify-center overflow-hidden">
         <div className="w-full max-w-lg">
           <div className="flex h-full w-full flex-col gap-4">
             <Skeleton className="mb-2 h-10" />

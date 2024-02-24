@@ -4,9 +4,9 @@ import Link from "next/link";
 
 import { VideoMetaFunctions } from "./video-meta-functions";
 import { api } from "~/trpc/server";
-import { cookieService } from "~/lib/storage";
+import { cookies } from "next/headers";
 
-const MACHINE_ID = cookieService.getValue("machine-id");
+const MACHINE_ID = cookies().get("machine-id")?.value;
 
 export async function VideoFeed() {
   const videos = await api.video.getVideos.query({
@@ -14,23 +14,23 @@ export async function VideoFeed() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {videos?.map((video) => (
         <Link
-          className="group grid grid-cols-[180px_1fr] gap-4 rounded-md border p-3 hover:bg-gray-200 hover:dark:bg-gray-900"
+          className="flex flex-col gap-4 rounded-md border p-3 hover:bg-gray-200 hover:dark:bg-gray-900"
           key={video.id}
           href={`/feed/${video.id}`}
         >
-          <div className="relative h-full shrink-0">
+          <div className="group relative h-full w-full">
             <Image
               src={video.thumbnailUrl}
               alt={video.title}
-              width={180}
-              height={120}
-              className="!h-full rounded-md object-cover group-hover:opacity-70"
+              width={400}
+              height={230}
+              className="!h-full !w-full rounded-md object-cover group-hover:opacity-70"
             />
             <div className="absolute inset-0 hidden h-full w-full items-center justify-center rounded-md group-hover:flex">
-              <PlayIcon className="h-10 w-10" />
+              <PlayIcon className="h-14 w-14" />
             </div>
           </div>
           <div className="flex flex-col gap-2">

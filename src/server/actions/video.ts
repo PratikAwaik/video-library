@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { v4 } from "uuid";
-import { cookieService } from "~/lib/storage";
 import { api } from "~/trpc/server";
 
 export async function getCloudinarySignature(fileName: string) {
@@ -36,8 +36,8 @@ export async function updateLikeMutate(data: { videoId: number }) {
 }
 
 function getMachineId() {
-  const machineId = cookieService.getValue("machine-id");
+  const machineId = cookies().get("machine-id")?.value;
   const newMachineId = v4();
-  if (!machineId) cookieService.setValue("machine-id", newMachineId);
+  if (!machineId) cookies().set("machine-id", newMachineId);
   return machineId ? machineId : newMachineId;
 }

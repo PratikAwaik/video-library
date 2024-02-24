@@ -4,22 +4,26 @@ import { Skeleton } from "~/components/ui/skeleton";
 export default function RootLoadingSkeleton() {
   return (
     <Layout>
-      <div className="mt-10 px-4">
-        <div className="flex flex-col gap-6">
+      <div className="px-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[
-            ...Array(5)
+            ...Array(6)
               .fill(0)
               .map((_, idx) => (
                 <div
                   key={idx}
-                  className="grid grid-cols-[180px_1fr] gap-4 rounded-md p-4"
+                  className="flex flex-col gap-4 rounded-md border p-3"
                 >
-                  <Skeleton className="h-28 rounded-md" />
+                  <div className="relative h-full w-full">
+                    <Skeleton className="h-[230px] w-full rounded-md object-cover group-hover:opacity-70" />
+                  </div>
                   <div className="flex flex-col gap-2">
-                    <Skeleton className="h-6 w-full" />
-                    <Skeleton className="h-6 w-full" />
-                    <Skeleton className="h-6 w-full" />
-                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-10" />
+                    <Skeleton className="h-6" />
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-6 w-6 rounded-full" />
+                      <Skeleton className="h-6 w-6 rounded-full" />
+                    </div>
                   </div>
                 </div>
               )),
