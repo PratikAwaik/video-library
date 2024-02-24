@@ -11,7 +11,7 @@ export async function VideoDetails({ videoId }: VideoDetailsProps) {
   const machineId = cookies().get("machine-id")?.value;
   const video = await api.video.getVideoDetails.query({
     videoId: parseInt(videoId),
-    machineId: cookies().get("machine-id")?.value,
+    machineId,
   });
 
   return (
