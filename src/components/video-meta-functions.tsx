@@ -48,6 +48,7 @@ export function VideoMetaFunctions({
   };
 
   const toggleLike = async () => {
+    if (!isVideoDetail) return;
     setIsLiking(true);
     await handleLikeUpdate({
       videoId: video.id,
