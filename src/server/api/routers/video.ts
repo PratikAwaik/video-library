@@ -29,6 +29,9 @@ export const videoRouter = createTRPCRouter({
       const machineId = input?.machineId ?? "";
 
       return ctx.db.video.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
         include: {
           views: {
             where: {
@@ -165,24 +168,8 @@ export const videoRouter = createTRPCRouter({
         },
       });
 
-      // delete entry and reduce view count because unliking
       if (viewEntityToUpdate?.id) {
-        await ctx.db.view.delete({
-          where: {
-            id: viewEntityToUpdate.id,
-          },
-        });
-
-        return ctx.db.video.update({
-          where: {
-            id: videoId,
-          },
-          data: {
-            viewsCount: {
-              decrement: 1,
-            },
-          },
-        });
+        return viewEntityToUpdate;
       }
 
       // create new entry in views table

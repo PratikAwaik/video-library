@@ -1,5 +1,10 @@
 import { v4 } from "uuid";
-import { getCloudinarySignature } from "~/server/actions/create-video";
+import {
+  createVideoMutate,
+  getCloudinarySignature,
+  updateLikeMutate,
+  updateViewMutate,
+} from "~/server/actions/video";
 
 export type CloudinarySignature = {
   apiKey: string;
@@ -8,6 +13,27 @@ export type CloudinarySignature = {
   timestamp: number;
   folderName: string;
 };
+
+export async function handleFileUpload(
+  fileContents: File,
+  progressCallback: (progress: number) => void,
+  data: { title: string; description: string },
+) {
+  const { secure_url } = await processFile(fileContents, progressCallback);
+  await createVideoMutate({
+    title: data.title,
+    description: data.description,
+    cloudinaryUrl: secure_url,
+  });
+}
+
+export async function handleViewUpdate(data: { videoId: number }) {
+  await updateViewMutate(data);
+}
+
+export async function handleLikeUpdate(data: { videoId: number }) {
+  await updateLikeMutate(data);
+}
 
 export async function processFile(
   file: File,

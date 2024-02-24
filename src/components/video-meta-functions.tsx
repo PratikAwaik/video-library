@@ -1,44 +1,32 @@
+"use client";
+
 import { type Like, type View, type Video } from "@prisma/client";
-import { v4 } from "uuid";
-import StorageService from "~/lib/storage";
 import { cn } from "~/lib/utils";
-import { api } from "~/trpc/react";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { HeartIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { handleLikeUpdate, handleViewUpdate } from "~/lib/file-uploader";
 
 type VideoMetaFunctionsProps = {
   video: { likes: Like[] } & { views: View[] } & Video;
   isVideoDetail?: boolean;
+  machineId?: string;
 };
 
 export function VideoMetaFunctions({
   video,
   isVideoDetail = false,
+  machineId,
 }: VideoMetaFunctionsProps) {
-  const utils = api.useUtils();
-  const { mutate: updateLikeMutate, isLoading: isLiking } =
-    api.video.updateLikes.useMutation({
-      onSuccess: async () => {
-        await refetchData();
-      },
-    });
-
-  const { mutate: updateViewMutate } = api.video.updateViews.useMutation({
-    onSuccess: async () => {
-      await refetchData();
-    },
-  });
+  const [isLiking, setIsLiking] = useState(false);
 
   const hasUserLiked = useMemo(() => {
-    const machineId = StorageService.getItem("vidext-machine-id");
     if (!machineId) return false;
     return !!video?.likes.find((like) => like.machineId === machineId)?.id;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video?.id, video?.likesCount]);
 
   const hasUserViewed = useMemo(() => {
-    const machineId = StorageService.getItem("vidext-machine-id");
     if (!machineId) return false;
     return !!video?.views.find((view) => view.machineId === machineId)?.id;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,42 +34,25 @@ export function VideoMetaFunctions({
 
   useEffect(() => {
     if (isVideoDetail && video?.id && !hasUserViewed) {
-      handleViews();
+      handleViews()
+        .then(() => ({}))
+        .catch(() => ({}));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video?.id, hasUserViewed]);
 
-  const handleViews = () => {
-    const machineId = StorageService.getItem("vidext-machine-id");
-    const newMachineId = v4();
-    if (!machineId) {
-      StorageService.setItem("vidext-machine-id", newMachineId);
-    }
-
-    updateViewMutate({
-      machineId: machineId ? machineId : newMachineId,
+  const handleViews = async () => {
+    await handleViewUpdate({
       videoId: video.id,
     });
   };
 
-  async function refetchData() {
-    await utils.video.getVideos.invalidate();
-    await utils.video.getVideoDetails.invalidate({
+  const toggleLike = async () => {
+    setIsLiking(true);
+    await handleLikeUpdate({
       videoId: video.id,
     });
-  }
-
-  const toggleLike = () => {
-    const machineId = StorageService.getItem("vidext-machine-id");
-    const newMachineId = v4();
-    if (!machineId) {
-      StorageService.setItem("vidext-machine-id", newMachineId);
-    }
-
-    updateLikeMutate({
-      machineId: machineId ? machineId : newMachineId,
-      videoId: video.id,
-    });
+    setIsLiking(false);
   };
 
   return (

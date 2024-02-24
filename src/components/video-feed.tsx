@@ -1,19 +1,17 @@
-"use client";
-
 import { PlayIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
-import RootLoadingSkeleton from "~/app/loading";
-import StorageService from "~/lib/storage";
-import { api } from "~/trpc/react";
+
 import { VideoMetaFunctions } from "./video-meta-functions";
+import { api } from "~/trpc/server";
+import { cookieService } from "~/lib/storage";
 
-export function VideoFeed() {
-  const { data: videos, isLoading } = api.video.getVideos.useQuery({
-    machineId: StorageService.getItem("vidext-machine-id")!,
+const MACHINE_ID = cookieService.getValue("machine-id");
+
+export async function VideoFeed() {
+  const videos = await api.video.getVideos.query({
+    machineId: MACHINE_ID,
   });
-
-  if (isLoading) return <RootLoadingSkeleton />;
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,9 +34,13 @@ export function VideoFeed() {
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <h3 className="text-xl font-medium">{video.title}</h3>
+            <h3 className="line-clamp-1 text-xl font-medium">{video.title}</h3>
             <p className="line-clamp-2 text-sm">{video.description}</p>
-            <VideoMetaFunctions video={video} />
+            <VideoMetaFunctions
+              key={video.id}
+              video={video}
+              machineId={MACHINE_ID}
+            />
           </div>
         </Link>
       ))}

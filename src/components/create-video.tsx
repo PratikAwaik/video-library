@@ -3,15 +3,14 @@
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
-import { api } from "~/trpc/react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
-import { processFile } from "~/lib/cloudinary";
 import { toast } from "sonner";
 import { VideoCameraIcon } from "@heroicons/react/24/solid";
+import { handleFileUpload } from "~/lib/file-uploader";
 
 export function CreateVideo() {
   const router = useRouter();
@@ -24,22 +23,7 @@ export function CreateVideo() {
     fileContents: File;
   } | null>();
   const [progress, setProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
-  const utils = api.useUtils();
-
-  const { mutate: createVideoMutate, isLoading } = api.video.create.useMutation(
-    {
-      onSuccess: async () => {
-        toast.success("🎉 Video uploaded successfully!");
-        router.push("/");
-        await utils.video.getVideos.invalidate();
-        setUploadedFile(null);
-      },
-      onError(error) {
-        toast.error(error.message);
-      },
-    },
-  );
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileObj = event.target.files ? event.target.files[0] : null;
@@ -63,27 +47,26 @@ export function CreateVideo() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setUploading(true);
+    setIsUploading(true);
 
     try {
-      if (uploadedFile?.fileType && uploadedFile?.fileContents) {
-        const uploadResponse: { secure_url: string } = await processFile(
-          uploadedFile.fileContents,
-          (progress) => {
-            setProgress(progress);
-          },
+      if (
+        title.trim().length &&
+        description.trim().length &&
+        uploadedFile?.fileType &&
+        uploadedFile?.fileContents
+      ) {
+        await handleFileUpload(
+          uploadedFile?.fileContents,
+          (progress) => setProgress(progress),
+          { title, description },
         );
-
-        createVideoMutate({
-          title,
-          description,
-          cloudinaryUrl: uploadResponse.secure_url,
-        });
+        router.push("/");
       }
     } catch (error: unknown) {
       toast.error((error as Error).message);
     } finally {
-      setUploading(false);
+      setIsUploading(false);
     }
   };
 
@@ -103,6 +86,7 @@ export function CreateVideo() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="video title"
           className="text-base"
+          required
         />
       </div>
 
@@ -117,6 +101,7 @@ export function CreateVideo() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={6}
+          required
         />
       </div>
 
@@ -131,25 +116,25 @@ export function CreateVideo() {
           name="video"
           onChange={handleFileChange}
           className="text-base"
+          required
         />
       </div>
 
-      <Button disabled={isLoading || uploading} className="mb-4" size={"lg"}>
-        {isLoading || uploading ? "Uploading..." : "Upload"}
+      <Button type="submit" disabled={isUploading} className="mb-4" size={"lg"}>
+        {isUploading ? "Uploading..." : "Upload"}
       </Button>
 
-      {isLoading ||
-        (uploading && (
-          <div className="flex flex-col gap-2">
-            <p>Please wait while we upload your video...</p>
-            <div className="flex items-center gap-2">
-              <Progress value={Number((progress * 100).toFixed(0))} max={100} />
-              <span className="text-sm">
-                {Number((progress * 100).toFixed(0))}%
-              </span>
-            </div>
+      {isUploading && (
+        <div className="flex flex-col gap-2">
+          <p>Please wait while we upload your video...</p>
+          <div className="flex items-center gap-2">
+            <Progress value={Number((progress * 100).toFixed(0))} max={100} />
+            <span className="text-sm">
+              {Number((progress * 100).toFixed(0))}%
+            </span>
           </div>
-        ))}
+        </div>
+      )}
     </form>
   );
 }

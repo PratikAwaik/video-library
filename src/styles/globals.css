@@ -73,4 +73,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  media-poster-image::part(poster) {
+    object-fit: cover;
+  }
 }
