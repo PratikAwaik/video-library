@@ -6,11 +6,10 @@ import { VideoMetaFunctions } from "./video-meta-functions";
 import { api } from "~/trpc/server";
 import { cookies } from "next/headers";
 
-const MACHINE_ID = cookies().get("machine-id")?.value;
-
 export async function VideoFeed() {
+  const machineId = cookies().get("machine-id")?.value;
   const videos = await api.video.getVideos.query({
-    machineId: MACHINE_ID,
+    machineId,
   });
 
   return (
@@ -39,7 +38,7 @@ export async function VideoFeed() {
             <VideoMetaFunctions
               key={video.id}
               video={video}
-              machineId={MACHINE_ID}
+              machineId={machineId}
             />
           </div>
         </Link>
