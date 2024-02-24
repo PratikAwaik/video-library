@@ -1,6 +1,6 @@
 # Video library
 
-A video based application where you can upload videos, give them title and description. Browse videos uploaded by other users and upload your own.
+A video based application library where you can upload videos, give them title and description. Browse videos uploaded by other users and upload your own.
 
 Check it out [here](https://vidext-video-library.vercel.app/).
 
