@@ -24,6 +24,7 @@ Check it out [here](https://vidext-video-library.vercel.app/).
 - Mobile responsive layout
 - Loading and error pages
 - Media player controls using [media-chrome library](https://www.media-chrome.org/)
+- Using server side rendering for video feed and video details page
 
 ## Tech stack
 
