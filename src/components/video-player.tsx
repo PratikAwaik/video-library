@@ -22,19 +22,19 @@ type VideoPlayerProps = {
 
 export function VideoPlayer({ cloudinaryUrl, thumbnailUrl }: VideoPlayerProps) {
   return (
-    <div className="flex w-full flex-wrap items-center justify-center rounded-md border-b border-t">
+    <div className="flex h-[400px] w-full flex-wrap items-center justify-center rounded-md border-b border-t sm:h-full">
       <MediaController style={{ width: "100%", height: "100%" }}>
         <video
           slot="media"
           src={cloudinaryUrl}
           preload="auto"
           muted
-          crossOrigin=""
+          className="aspect-video h-full w-full"
         />
         <MediaPosterImage
           slot="poster"
           src={thumbnailUrl}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{ width: "100%", height: "100%", objectFit: "contain" }}
         ></MediaPosterImage>
         <MediaLoadingIndicator
           noautohide
