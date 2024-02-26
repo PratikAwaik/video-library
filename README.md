@@ -36,5 +36,6 @@ The project is setup using [t3 stack](https://create.t3.gg/).
 - Shadcn
 - tRPC
 - Prisma
+- PostgreSQL hosted on verceldb
 - Cloudinary
 - Zod
